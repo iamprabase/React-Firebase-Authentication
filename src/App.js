@@ -1,25 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Form from './components/Form';
+import Header from './components/Header';
 
 function App() {
+  const [isAuhtenticated, setIsAuthenticated] = useState(false);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="limiter">
+        <div className="container-login100">
+          <div className="wrap-login100">
+            <Header title={isAuhtenticated?"Logged In":"Sign In"}/>
+
+            <Form isAuhtenticated={isAuhtenticated} setIsAuthenticated={setIsAuthenticated}/>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
