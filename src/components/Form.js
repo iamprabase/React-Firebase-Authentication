@@ -12,17 +12,16 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const signInSuccess = signIn();
-    console.log(signInSuccess);
+    signIn();
   }
 
   const signIn = () => {
     clearErrors();
     firebaseInit
       .auth()
-      .loginWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email, password)
       .catch((err) => {
-        switch (err.codes) {
+        switch (err.code) {
           case "auth/invalid-email":
           case "auth/user-disabled":
           case "auth/user-not-found":
@@ -60,13 +59,13 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
   };
 
   const signOut = () => {
-    firebaseInit.auth().singOut();
+    firebaseInit.auth().signOut();
   };
 
   const authListener = () => {
-    firebaseInit.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
+    firebaseInit.auth().onAuthStateChanged((usr) => {
+      if (usr) {
+        setUser(usr);
         setIsAuthenticated(true);
         clearInputs();
       } else {
@@ -81,7 +80,7 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
     return () => {
       authListener();
     };
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clearInputs = () => {
     setEmail("");
@@ -96,7 +95,15 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
   return (
     <>
       {!isAuhtenticated ? (
-        <form className="login100-form validate-form" onSubmit={handleSubmit}>
+        ''
+       ) : (
+         <div className="container-login100-form-btn">
+             <button onClick={signOut} type="submit" className="login100-form-btn">
+             Logout
+           </button>
+         </div>
+      )}
+      <form className="login100-form validate-form" onSubmit={handleSubmit}>
           <div className="wrap-input100 validate-input m-b-26">
             <span className="label-input100">Username</span>
             <input
@@ -107,7 +114,7 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
               name="email"
               placeholder="Enter email"
             />
-            {emailError && <span className="focus-input100"> emailError </span>}
+            {emailError && <span className="focus-input100"> {emailError} </span>}
           </div>
 
           <div className="wrap-input100 validate-input m-b-18">
@@ -121,7 +128,7 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
               placeholder="Enter password"
             />
             {passwordError && (
-              <span className="focus-input100">passwordError</span>
+              <span className="focus-input100">{passwordError}</span>
             )}
           </div>
 
@@ -155,15 +162,8 @@ export default function Form({ isAuhtenticated, setIsAuthenticated }) {
               </a>
             </div>
           </div>
-          {globalError && <span className="focus-input100">globalError</span>}
+          {globalError && <span className="focus-input100">{globalError}</span>}
         </form>
-      ) : (
-        <div className="container-login100-form-btn">
-            <button onClick={signOut} type="submit" className="login100-form-btn">
-            Logout
-          </button>
-        </div>
-      )}
     </>
   );
 }
